@@ -1,2 +1,2 @@
 # CodeWebApp
-#Just trying to learn some basic stuff, nothing interesting here really.
+#Basic web desing, testing git, Node js, Azure, HTML and CSS.
