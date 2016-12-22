@@ -2,12 +2,31 @@ var http = require('http');
 var fs = require('fs');
 var index = fs.readFileSync('index.html')
 var pozycjeH5 = fs.readFileSync('pozycjeH5.css')
-http.createServer(function (req, res) {
-    console.log('Got request for ' + req.url);
-    // GET HTML
-    res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
-    res.end(index);
-    // GET CSS
-    res.writeHead(200, {'Content-Type': 'text/css; charset=utf-8'});
-    res.end(pozycjeH5);
-}).listen(process.env.PORT);
+
+var server = http.createServer(function (request, response) {
+    fs.readFile('./' + request.url, function(err, data) {
+        if (!err) {
+            var dotoffset = request.url.lastIndexOf('.');
+            var mimetype = dotoffset == -1
+                            ? 'text/plain'
+                            : {
+                                '.html' : 'text/html',
+                                '.ico' : 'image/x-icon',
+                                '.jpg' : 'image/jpeg',
+                                '.png' : 'image/png',
+                                '.gif' : 'image/gif',
+                                '.css' : 'text/css',
+                                '.js' : 'text/javascript'
+                                }[ request.url.substr(dotoffset) ];
+            response.setHeader('Content-type' , mimetype);
+            response.end(data);
+            console.log( request.url, mimetype );
+        } else {
+            console.log ('file not found: ' + request.url);
+            response.writeHead(404, "Not Found");
+            response.end();
+        }
+    });
+}
+
+.listen(process.env.PORT)};
